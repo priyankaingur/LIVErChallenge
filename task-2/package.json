@@ -1,0 +1,22 @@
+{
+  "name": "task-2",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A challenge task from LIVEr",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Priyanka Thangamuthu",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "firebase": "^11.0.1",
+    "nodemon": "^3.1.7"
+  }
+}

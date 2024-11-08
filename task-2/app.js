@@ -3,7 +3,7 @@ require("express-async-errors");
 const app = express();
 
 const cors = require("cors");
-const {unknownEndpoint, errorHandler} = require("./src/utils/middleware");
+const {unknownEndpoint, errorHandler, authMiddleware} = require("./src/utils/middleware");
 // const profitRouter = require("./controller/profits")
 // const expenseRouter = require("./controller/expenses")
 // const incomeRouter = require("./controller/incomes")
@@ -28,7 +28,7 @@ app.use(express.json());
 // app.use("/api/incomes", incomeRouter);
 // app.use("/api/cakes", cakeRouter);
 // app.use("/api/profiles", profileRouter);
-
+app.use(authMiddleware);
 app.use(unknownEndpoint);
 app.use(errorHandler);
 

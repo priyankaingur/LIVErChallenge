@@ -1,5 +1,5 @@
 const logger = require("./logger");
-// const jwt = require("jsonwebtoken");
+const { admin } = require('../config/firebaseConfig');
 
 const requestLogger = (request, response, next) => {
     logger.info("Method:", request.method);
@@ -8,26 +8,33 @@ const requestLogger = (request, response, next) => {
     logger.info("---");
     next();
 };
-// const userExtractor = (request, response, next) => {
-//     // code that extracts the token
-//     const decodedToken = jwt.verify(request.token, process.env.SECRET);
-//     if (!decodedToken.id) {
-//         console.log("usename",decodedToken.id);
-//         return response.status(401).json({ error: "token missing or invalid" });
-//     }
-//     request.user= decodedToken.id;
-//     next();
-// };
+const authMiddleware = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
 
-// const tokenExtractor = (request, response, next) => {
-//     // code that extracts the token
-//     const authorization = request.get("authorization");
-//     if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
-//         request.token= authorization.substring(7);
-//     }else
-//         request.token= null;
-//     next();
-// };
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        logger.error("Authorization header missing or malformed");
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        req.userId = decodedToken.uid;
+        next();
+    } catch (error) {
+        logger.error("Token verification failed:", error.message);
+
+        if (error.code === 'auth/id-token-expired') {
+            res.status(401).json({ message: 'Token expired' });
+        } else if (error.code === 'auth/argument-error') {
+            res.status(401).json({ message: 'Invalid token format' });
+        } else {
+            res.status(401).json({ message: 'Invalid token' });
+        }
+    }
+};
+
 const unknownEndpoint = (request, response, next) => {
     response.status(404).send({ error: "unknown endpoint" });
     next();
@@ -51,8 +58,7 @@ const errorHandler = (error, request, response, next) => {
 };
 
 module.exports = {
-    // tokenExtractor,
-    // userExtractor,
+    authMiddleware,
     requestLogger,
     unknownEndpoint,
     errorHandler

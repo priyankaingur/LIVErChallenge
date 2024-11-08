@@ -1,21 +1,18 @@
-import { admin } from '../config/firebaseConfig.js';
-import redisClient from '../config/redisConfig.js'; // Assuming you have a Redis config
-import { db } from '../config/firebaseConfig.js';  // Firebase Firestore reference
+import { db } from '../config/firebaseConfig.js';
+import redisClient from '../config/redisConfig.js';
 
 // Log product view
 const logProductViewService = async (userId, productId) => {
     try {
         const userRef = db.collection('users').doc(userId).collection('recentlyViewed');
-
-        // Record the view time for the product
         const timestamp = Date.now();
 
         // Store product ID and timestamp in Firestore
         await userRef.add({ productId, timestamp });
 
-        // Cache the most recent viewed product in Redis (limited to 10 products)
-        await redisClient.lpush(`recentlyViewed:${userId}`, JSON.stringify({ productId, timestamp }));
-        await redisClient.ltrim(`recentlyViewed:${userId}`, 0, 9); // Keep only the last 10 viewed products
+        // Redis cache for recently viewed products (limit to 10)
+        await redisClient.sendCommand(['LPUSH', `recentlyViewed:${userId}`, JSON.stringify({ productId, timestamp })]);
+        await redisClient.sendCommand(['LTRIM', `recentlyViewed:${userId}`, '0', '9']);
 
         return { productId, timestamp };
     } catch (error) {
@@ -26,11 +23,10 @@ const logProductViewService = async (userId, productId) => {
 // Get recently viewed products from Firestore or Redis cache
 const getRecentlyViewedService = async (userId) => {
     try {
-        // Check if data is in Redis cache
-        const cachedData = await redisClient.lrange(`recentlyViewed:${userId}`, 0, -1);
+        const cachedData = await redisClient.sendCommand(['LRANGE', `recentlyViewed:${userId}`, '0', '-1']);
 
         if (cachedData.length > 0) {
-            return cachedData.map(item => JSON.parse(item));  // Parse cached data and return it
+            return cachedData.map(item => JSON.parse(item));
         }
 
         // If not in cache, fetch from Firestore
@@ -39,9 +35,9 @@ const getRecentlyViewedService = async (userId) => {
 
         const recentlyViewed = snapshot.docs.map(doc => doc.data());
 
-        // Cache the recently viewed products in Redis
+        // Cache recently viewed products in Redis
         recentlyViewed.forEach(item => {
-            redisClient.lpush(`recentlyViewed:${userId}`, JSON.stringify(item));
+            redisClient.sendCommand(['LPUSH', `recentlyViewed:${userId}`, JSON.stringify(item)]);
         });
 
         return recentlyViewed;

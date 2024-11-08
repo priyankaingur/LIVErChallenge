@@ -5,6 +5,7 @@ import cors from "cors";
 // Import middlewares and routes
 import { unknownEndpoint, errorHandler, authMiddleware } from "./src/utils/middleware.js";
 import recentlyViewedRouter from "./src/routes/apiV1.js";
+import redisClient from "./src/config/redisConfig.js";
 
 const app = express();
 
@@ -13,11 +14,13 @@ app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 
+app.set("redisClient", redisClient);
+
 // Versioned routes
 app.use("/api/v1/users", recentlyViewedRouter);  // Use versioned route for recently viewed products
 
 // Global middlewares
-app.use(authMiddleware);
+// app.use(authMiddleware);
 app.use(unknownEndpoint);
 app.use(errorHandler);
 

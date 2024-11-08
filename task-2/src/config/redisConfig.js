@@ -1,13 +1,24 @@
 import redis from 'redis';
 
-// Initialize Redis client
 const redisClient = redis.createClient({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
+    url: `redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
 });
 
 redisClient.on('error', (err) => {
     console.error('Redis error:', err);
 });
 
+(async () => {
+    try {
+        if (!redisClient.isOpen) {
+            await redisClient.connect();
+            console.log("Connected to Redis");
+        }
+    } catch (err) {
+        console.error("Error connecting to Redis:", err);
+    }
+})();
+
 export default redisClient;
+
+

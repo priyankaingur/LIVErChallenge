@@ -1,3 +1,4 @@
+const admin = require('firebase-admin');
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -8,4 +9,11 @@ const firebaseConfig = {
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
-export default firebaseConfig;
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+        ...firebaseConfig
+    });
+}
+
+module.exports = admin;

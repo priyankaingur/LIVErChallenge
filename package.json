@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express": "^4.21.1",
+    "firebase-admin": "^12.7.0",
+    "firebase-auth": "^0.1.2",
+    "redis": "^4.7.0"
+  }
+}

@@ -1,5 +1,5 @@
-const logger = require("./logger");
-const { admin } = require('../config/firebaseConfig');
+import { admin } from '../config/firebaseConfig.js';
+import logger from './logger.js';
 
 const requestLogger = (request, response, next) => {
     logger.info("Method:", request.method);
@@ -8,6 +8,7 @@ const requestLogger = (request, response, next) => {
     logger.info("---");
     next();
 };
+
 const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -41,25 +42,17 @@ const unknownEndpoint = (request, response, next) => {
 };
 
 const errorHandler = (error, request, response, next) => {
-    console.log("msg",error.message);
-    console.log("name",error.name);
+    console.log("msg", error.message);
+    console.log("name", error.name);
 
     if (error.name === "CastError") {
         return response.status(400).send({ error: "mal-formatted id" });
-    }else if (error.name === "ValidationError") {
+    } else if (error.name === "ValidationError") {
         return response.status(400).json({ error: error.message });
-    }else if(error.name === "MongoServerError")
+    } else if (error.name === "MongoServerError") {
         return response.status(400).json({ error: "Name already exists" });
-    // else if (error.name === "JsonWebTokenError")
-    //     return response.status(401).json({ error: "invalid token" });
-    // else if (error.name === "TokenExpiredError")
-    //     return response.status(401).json({ error: "token expired" });
+    }
     next(error);
 };
 
-module.exports = {
-    authMiddleware,
-    requestLogger,
-    unknownEndpoint,
-    errorHandler
-};
+export { authMiddleware, requestLogger, unknownEndpoint, errorHandler };

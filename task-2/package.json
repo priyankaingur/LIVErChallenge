@@ -5,9 +5,10 @@
   "description": "A challenge task from LIVEr",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "babel-node src/app.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src --out-dir dist"
   },
   "author": "Priyanka Thangamuthu",
   "license": "ISC",
@@ -17,6 +18,14 @@
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "firebase": "^11.0.1",
-    "nodemon": "^3.1.7"
-  }
+    "firebase-admin": "^12.7.0",
+    "nodemon": "^3.1.7",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.25.9",
+    "@babel/node": "^7.26.0",
+    "@babel/preset-env": "^7.26.0"
+  },
+  "type": "module"
 }

@@ -1,35 +1,24 @@
-const express = require("express");
-require("express-async-errors");
+import express from "express";
+import "express-async-errors";
+import cors from "cors";
+
+// Import middlewares and routes
+import { unknownEndpoint, errorHandler, authMiddleware } from "./src/utils/middleware.js";
+import recentlyViewedRouter from "./src/routes/apiV1.js";
+
 const app = express();
 
-const cors = require("cors");
-const {unknownEndpoint, errorHandler, authMiddleware} = require("./src/utils/middleware");
-// const profitRouter = require("./controller/profits")
-// const expenseRouter = require("./controller/expenses")
-// const incomeRouter = require("./controller/incomes")
-// const cakeRouter = require("./controller/cakes")
-// const profileRouter = require("./controller/profiles")
-
-
-// const middleware = require("./utils/middleware");
-
-// const mongoose = require('mongoose').set("strictQuery", true)
-
-
-// mongoose
-//     .connect(config.MONGODB_URI)
-//     .then(() => console.log("connected"))
-
+// Middleware setup
 app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
-// app.use("/api/profits", profitRouter);
-// app.use("/api/expenses", expenseRouter);
-// app.use("/api/incomes", incomeRouter);
-// app.use("/api/cakes", cakeRouter);
-// app.use("/api/profiles", profileRouter);
+
+// Versioned routes
+app.use("/api/v1/users", recentlyViewedRouter);  // Use versioned route for recently viewed products
+
+// Global middlewares
 app.use(authMiddleware);
 app.use(unknownEndpoint);
 app.use(errorHandler);
 
-module.exports = app
+export default app;

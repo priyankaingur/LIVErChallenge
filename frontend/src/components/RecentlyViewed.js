@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from '../firebase';
+import {auth, signOut} from '../firebase';
 import {Link} from "react-router-dom";  // Assuming you've set up Firebase auth
 
 
@@ -45,12 +45,25 @@ export default function RecentlyViewed() {
             }
         }
     };
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userUid');
+            console.log('User logged out');
+        } catch (err) {
+            console.error('Error logging out:', err);
+        }
+    };
 
     useEffect(() => {
         fetchRecentlyViewed();
     }, []);
     return (
         <div>
+                <button onClick={handleLogout} style={{ marginTop: '10px' }}>
+                    Logout
+                </button>
             <h3>Recently Viewed Products</h3>
             <ul>
                 {recentProducts.map((product) => (

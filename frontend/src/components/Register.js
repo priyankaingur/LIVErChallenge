@@ -7,7 +7,6 @@ function Auth() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isRegistering, setIsRegistering] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to track login status
 
     const handleAuth = async (e) => {
         e.preventDefault();
@@ -38,7 +37,6 @@ function Auth() {
             localStorage.setItem('userToken', idToken);
             localStorage.setItem('userUid', userCredential.user.uid);
 
-            setIsLoggedIn(true); // Set login status to true
         } catch (err) {
             if (err.code === 'auth/email-already-in-use') {
                 setError("This email is already registered. Please use a different one.");
@@ -50,17 +48,6 @@ function Auth() {
         }
     };
 
-    const handleLogout = async () => {
-        try {
-            await signOut(auth);
-            localStorage.removeItem('userToken');
-            localStorage.removeItem('userUid');
-            setIsLoggedIn(false); // Set login status to false
-            console.log('User logged out');
-        } catch (err) {
-            console.error('Error logging out:', err);
-        }
-    };
 
     return (
         <div>
@@ -92,11 +79,7 @@ function Auth() {
                 {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
             </button>
 
-            {isLoggedIn && (
-                <button onClick={handleLogout} style={{ marginTop: '10px' }}>
-                    Logout
-                </button>
-            )}
+
         </div>
     );
 }

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db } from '../firebase';
+import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, signOut } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
 function Auth() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [isRegistering, setIsRegistering] = useState(true);  // State to toggle between Register and Login
+    const [isRegistering, setIsRegistering] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to track login status
 
     const handleAuth = async (e) => {
         e.preventDefault();
@@ -28,22 +29,16 @@ function Auth() {
             } else {
                 // Login User
                 userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                console.log("User logged in:", user);
+                console.log("User logged in:", userCredential.user);
             }
 
-            // Retrieve the access token
             const idToken = await userCredential.user.getIdToken();
             console.log('User ID Token:', idToken);
 
-            // Store the token in localStorage (you can also use sessionStorage)
             localStorage.setItem('userToken', idToken);
-
-            // Optional: Store user data as well for easy access
             localStorage.setItem('userUid', userCredential.user.uid);
-            console.log('User UID stored in localStorage');
 
+            setIsLoggedIn(true); // Set login status to true
         } catch (err) {
             if (err.code === 'auth/email-already-in-use') {
                 setError("This email is already registered. Please use a different one.");
@@ -52,6 +47,18 @@ function Auth() {
             } else {
                 setError("Error: " + err.message);
             }
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userUid');
+            setIsLoggedIn(false); // Set login status to false
+            console.log('User logged out');
+        } catch (err) {
+            console.error('Error logging out:', err);
         }
     };
 
@@ -84,6 +91,12 @@ function Auth() {
             <button onClick={() => setIsRegistering(!isRegistering)}>
                 {isRegistering ? 'Already have an account? Login' : "Don't have an account? Register"}
             </button>
+
+            {isLoggedIn && (
+                <button onClick={handleLogout} style={{ marginTop: '10px' }}>
+                    Logout
+                </button>
+            )}
         </div>
     );
 }

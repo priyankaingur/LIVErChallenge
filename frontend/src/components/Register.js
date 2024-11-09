@@ -40,7 +40,14 @@ function Auth() {
             // Retrieve the access token
             const idToken = await userCredential.user.getIdToken();
             console.log('User ID Token:', idToken);
-            console.log('userId:', userCredential.user.uid);r
+
+            // Store the token in localStorage (you can also use sessionStorage)
+            localStorage.setItem('userToken', idToken);
+            console.log('Token stored in localStorage');
+
+            // Optional: Store user data as well for easy access
+            localStorage.setItem('userUid', userCredential.user.uid);
+            console.log('User UID stored in localStorage');
 
         } catch (err) {
             if (err.code === 'auth/email-already-in-use') {

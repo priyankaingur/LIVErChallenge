@@ -1,59 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { auth } from '../firebase';
-import { getFirestore, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
-import { Link } from 'react-router-dom';
-function RecentlyViewed() {
+import {Link} from "react-router-dom";  // Assuming you've set up Firebase auth
+
+
+export default function RecentlyViewed() {
     const [recentProducts, setRecentProducts] = useState([]);
+    const fetchRecentlyViewed = async () => {
+        const user = auth.currentUser;  // Get current authenticated user
+
+        if (user) {
+            try {
+                // Retrieve the token from localStorage
+                const token = localStorage.getItem('userToken');
+
+                if (!token) {
+                    throw new Error('No authentication token found in localStorage');
+                }
+
+                // Use the user.uid to construct the API URL
+                const apiUrl = `https://api-gteteofhta-uc.a.run.app/api/v1/users/${user.uid}/recentlyViewed`;
+
+                // Make the API request
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,  // Use the token from localStorage
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recently viewed products');
+                }
+
+                const data = await response.json();
+                console.log('Recently viewed products:', data);
+
+                if (data && data?.data) {
+                    // Assuming the response contains a 'recentlyViewed' field
+                    setRecentProducts(data.data);
+
+                } else {
+                    console.log('No recent products found.');
+                }
+            } catch (error) {
+                console.error('Error fetching recently viewed products:', error);
+            }
+        }
+    };
 
     useEffect(() => {
-        const fetchRecentlyViewed = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                const db = getFirestore();
-                const recentlyViewedRef = collection(db, 'users', user.uid, 'recentlyViewed'); // Correct reference to the sub-collection
-                const recentProductsQuery = query(recentlyViewedRef, orderBy('timestamp', 'desc'), limit(10)); // Ordered by timestamp, limit to 10 items
-                try {
-                    const querySnapshot = await getDocs(recentProductsQuery);
-
-                    // Check if the querySnapshot exists
-                    if (!querySnapshot.empty) {
-                        const products = querySnapshot.docs.map((doc) => ({
-                            ...doc.data(),
-                            productId: doc.id,
-                        }));
-                        setRecentProducts(products);
-                    } else {
-                        console.log("No recent products found.");
-                    }
-                } catch (error) {
-                    console.error("Error fetching recently viewed products:", error);
-                }
-            }
-        };
-
         fetchRecentlyViewed();
     }, []);
-
+    console.log("DJAS",recentProducts)
     return (
         <div>
-            <h2>Recently Viewed Products</h2>
-            {recentProducts.length > 0 ? (
-                <ul>
-                    {recentProducts.map((product, index) => (
-                        <li key={index}>
-                            {/* Link to the product detail page */}
-                            <Link to={`/product/${product.productId}`}>
-                                Product ID: {product.productId},
-                            </Link>
-                            Viewed At: {new Date(product.timestamp).toLocaleString()}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No recently viewed products.</p>
-            )}
+            <h3>Recently Viewed Products</h3>
+            <ul>
+                {recentProducts.map((product) => (
+                    <li key={product.productId}>
+                        <Link to={`/product/${product.productId}`} style={{ color: 'red' }}>
+                            {product.productId}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
-
-export default RecentlyViewed;

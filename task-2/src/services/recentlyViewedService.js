@@ -4,19 +4,21 @@ import redisClient from '../config/redisConfig.js';
 // Log product view
 const logProductViewService = async (userId, productId) => {
     try {
+        // Check if the user exists
         const userRef = db.collection('users').doc(userId);
         const userSnap = await userRef.get();
         if (!userSnap.exists) {
-            return { status: 404, message: "User ID doesn't exists" };
+            return { status: 404, message: "User ID doesn't exist" };
         }
+
+        // Check if the product exists
         const productRef = db.collection('products').doc(productId);
         const productSnap = await productRef.get();
-
         if (!productSnap.exists) {
-            return { status: 404, message: "Product ID doesn't exists" };
+            return { status: 404, message: "Product ID doesn't exist" };
         }
-        const userRefRecentlyViewed = userRef.collection('recentlyViewed');
 
+        const userRefRecentlyViewed = userRef.collection('recentlyViewed');
         const timestamp = Date.now();
 
         // Store product ID and timestamp in Firestore

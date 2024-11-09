@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { unknownEndpoint, errorHandler, authMiddleware } from "./src/utils/middleware.js";
+import { unknownEndpoint, errorHandler, authMiddleware } from "./src/middlewares/middleware.js";
 import recentlyViewedRouter from "./src/routes/apiV1.js";
 import authRouter from "./src/routes/authRoutes.js";
 

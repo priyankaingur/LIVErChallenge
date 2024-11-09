@@ -1,13 +1,5 @@
 import { admin } from '../config/firebaseConfig.js';
-import logger from './logger.js';
-
-const requestLogger = (request, response, next) => {
-    logger.info("Method:", request.method);
-    logger.info("Path:  ", request.path);
-    logger.info("Body:  ", request.body);
-    logger.info("---");
-    next();
-};
+import logger from '../utils/logger.js';
 
 const authMiddleware = async (req, res, next) => {
     if (req.originalUrl.startsWith("/auth/signIn") && req.method === "POST") {
@@ -59,4 +51,4 @@ const errorHandler = (error, request, response, next) => {
     next(error);
 };
 
-export { authMiddleware, requestLogger, unknownEndpoint, errorHandler };
+export { authMiddleware, unknownEndpoint, errorHandler };

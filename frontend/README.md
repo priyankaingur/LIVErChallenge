@@ -1,6 +1,6 @@
 # React App with Firebase Authentication
 
-This React app allows users to register using email and password through Firebase Authentication.
+[This](https://liv-er-challenge.vercel.app/) React app allows users to register using email and password through Firebase Authentication.
 
 ## Features
 

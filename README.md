@@ -45,7 +45,7 @@ Access the API documentation via Swagger:
 
 How to use the Swagger UI:
 
-1. First, Register using the frontend app hosted at: [Frontend URL]
+1. First, Register using the frontend app hosted [here](https://liv-er-challenge.vercel.app/)
 2. This will allow you to create a new user with a username and password.
 3. Get the Token: After registering via the frontend, use the Auth API in 
    Swagger (/login) to authenticate and get the userId and token. 

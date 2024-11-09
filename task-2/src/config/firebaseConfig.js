@@ -6,7 +6,7 @@ config();
 // Initialize Firebase Admin SDK with Firestore
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
-    projectId: process.env.FIREBASE_PROJECT_ID,
+    projectId: process.env.FB_PROJECT_ID,
 });
 
 const db = admin.firestore(); // Firestore database instance

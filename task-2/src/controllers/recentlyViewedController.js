@@ -1,31 +1,42 @@
 import { logProductViewService, getRecentlyViewedService } from "../services/recentlyViewedService.js";
 
-const logProductView = async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const { productId } = req.body;
+const logProductView = async (req, res, next) => {
+    const { userId } = req.params;
+    const { productId } = req.body;
 
-        // Call the service to log the product view
+    if (!userId || !productId) {
+        return res.status(400).json({ message: "Missing userId or productId" });
+    }
+
+    try {
         const result = await logProductViewService(userId, productId);
+
+        if (result.status === 404) {
+            return res.status(404).json({ message: result.message });
+        }
 
         return res.status(200).json({ message: "Product view logged successfully", data: result });
     } catch (error) {
-        console.error("Error logging product view:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        next(error);
     }
 };
 
-const getRecentlyViewed = async (req, res) => {
+const getRecentlyViewed = async (req, res,next) => {
     try {
         const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).json({ message: "Missing userId" });
+        }
 
-        // Call the service to get recently viewed products
         const result = await getRecentlyViewedService(userId);
+
+        if (result.status === 404) {
+            return res.status(404).json({ message: result.message });
+        }
 
         return res.status(200).json({ message: "Recently viewed products retrieved successfully", data: result });
     } catch (error) {
-        console.error("Error retrieving recently viewed products:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        next(error);
     }
 };
 

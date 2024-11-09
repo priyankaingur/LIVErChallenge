@@ -10,6 +10,9 @@ const requestLogger = (request, response, next) => {
 };
 
 const authMiddleware = async (req, res, next) => {
+    if (req.originalUrl.startsWith("/auth/signIn") && req.method === "POST") {
+        next();
+    }else{
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -33,6 +36,7 @@ const authMiddleware = async (req, res, next) => {
         } else {
             res.status(401).json({ message: 'Invalid token' });
         }
+    }
     }
 };
 

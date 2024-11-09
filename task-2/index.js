@@ -1,17 +1,16 @@
-import config from "./src/utils/config.js";
-import {admin, db} from './src/config/firebaseConfig.js';
-import client from './src/config/redisConfig.js';
-import dotenv from 'dotenv';
 
-dotenv.config();
+import client from './src/config/redisConfig.js';
+import * as functions from 'firebase-functions';
+
 import app from "./app.js";
-// const app = require("./app");
 import http from "http";
 
 const server = http.createServer(app);
 
-server.listen(config.PORT, () => {
-    console.log(`Server running on port ${config.PORT}`);
-});
+// Utilize for local development
+// server.listen(3000, () => {
+//     console.log(`Server running on port 3000`);
+// });
 
-export { app, client, admin, db };
+export { app, client};
+export const api = functions.https.onRequest(app);

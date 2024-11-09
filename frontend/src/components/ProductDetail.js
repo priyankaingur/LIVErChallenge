@@ -18,7 +18,6 @@ function ProductDetail() {
 
         fetchProductDetails();
     }, [productId]);
-    console.log(productId)
 
     return (
         <div>

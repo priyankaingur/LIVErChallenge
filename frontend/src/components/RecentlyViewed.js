@@ -17,10 +17,8 @@ export default function RecentlyViewed() {
                     throw new Error('No authentication token found in localStorage');
                 }
 
-                // Use the user.uid to construct the API URL
                 const apiUrl = `https://api-gteteofhta-uc.a.run.app/api/v1/users/${user.uid}/recentlyViewed`;
 
-                // Make the API request
                 const response = await fetch(apiUrl, {
                     method: 'GET',
                     headers: {
@@ -37,7 +35,6 @@ export default function RecentlyViewed() {
                 console.log('Recently viewed products:', data);
 
                 if (data && data?.data) {
-                    // Assuming the response contains a 'recentlyViewed' field
                     setRecentProducts(data.data);
 
                 } else {
@@ -52,7 +49,6 @@ export default function RecentlyViewed() {
     useEffect(() => {
         fetchRecentlyViewed();
     }, []);
-    console.log("DJAS",recentProducts)
     return (
         <div>
             <h3>Recently Viewed Products</h3>

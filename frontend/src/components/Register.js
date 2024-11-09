@@ -19,15 +19,11 @@ function Auth() {
                 userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Create a new user document in Firestore
                 await setDoc(doc(db, 'users', user.uid), {
                     email: user.email,
                     uid: user.uid,
                     createdAt: new Date(),
                 });
-
-                console.log("User created:", user);
-                console.log('User added to Firestore');
 
             } else {
                 // Login User
@@ -43,7 +39,6 @@ function Auth() {
 
             // Store the token in localStorage (you can also use sessionStorage)
             localStorage.setItem('userToken', idToken);
-            console.log('Token stored in localStorage');
 
             // Optional: Store user data as well for easy access
             localStorage.setItem('userUid', userCredential.user.uid);

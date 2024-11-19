@@ -41,7 +41,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 const allowedOrigins = [
-    "https://liv-er-challenge.vercel.app", "http://localhost:3000", 'http://localhost:8080', 'http://127.0.0.1:5500'
+    "https://liv-er-challenge.vercel.app", "https://api-gteteofhta-uc.a.run.app/","https://us-central1-liverchallenge.cloudfunctions.net/api/","http://localhost:3000", 'http://localhost:8080', 'http://127.0.0.1:5500'
 ];
 // console.log("allowed origins: " + allowedOrigins);
 
@@ -56,7 +56,7 @@ const corsOptions = {
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
 };
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 app.use(authMiddleware);

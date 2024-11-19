@@ -45,7 +45,7 @@ Access the API documentation via Swagger:
 
 How to use the Swagger UI:
 
-1. First, Register using the frontend app hosted [here](https://liv-er-challenge.vercel.app/)
+1. First, Register using the frontend app hosted [here](https://api-gteteofhta-uc.a.run.app/)
 2. This will allow you to create a new user with a username and password.
 3. Get the Token: After registering via the frontend, use the Auth API in 
    Swagger (/login) to authenticate and get the userId and token. 
@@ -56,11 +56,12 @@ How to use the Swagger UI:
     - POST **api/v1/users/:userId/recentlyViewed:** 
       - Log a product view for the authenticated user. 
       - This endpoint requires the Authorization header with the token.
+      - A list of product IDs to be used: [KXc7IkBEtQcVlScbdmLO, Ykglf5AazcQGwGnQIdkM, aEAPH3a4piehMK2IsNlD, t6jEOk1xHsiwYlCPPgN9].
     - GET **api/v1/users/:userId/recentlyViewed:** 
       - Fetch recently viewed products for the authenticated user. Pass the userId as a parameter. 
       - Check Recently Viewed Products on the Frontend 
 
-Access the list of products the user has viewed via the frontend app, available at:
-[Frontend URL].
+Access the list of products the user has viewed via the frontend app, 
+available at: [[url](https://api-gteteofhta-uc.a.run.app/recently-viewed)]
 
 

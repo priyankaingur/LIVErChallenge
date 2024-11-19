@@ -1,7 +1,20 @@
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import app from "./app.js";
 import admin from 'firebase-admin';
 import nodemailer from "nodemailer";
+
+
+import http from "http";
+import {createClient} from "redis";
+
+const server = http.createServer(app);
+
+//Utilize for local development and comment it for deploying into firebase
+server.listen(3000, () => {
+    console.log(`Server running on port 3000`);
+});
+
+export {app,createClient}
 
 
 // Initialize Nodemailer transport

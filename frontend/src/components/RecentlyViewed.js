@@ -17,7 +17,8 @@ export default function RecentlyViewed() {
                     throw new Error('No authentication token found in localStorage');
                 }
 
-                const apiUrl = `https://api-gteteofhta-uc.a.run.app/api/v1/users/${user.uid}/recentlyViewed`;
+                // const apiUrl = `https://api-gteteofhta-uc.a.run.app/api/v1/users/${user.uid}/recentlyViewed`;
+                const apiUrl = `https://us-central1-liverchallenge.cloudfunctions.net/api/api/v1/users/${user.uid}/recentlyViewed`;
 
                 const response = await fetch(apiUrl, {
                     method: 'GET',
